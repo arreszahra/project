@@ -27,5 +27,23 @@ userSchema.pre("save", async function (next){
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword,this.password);
 }
+userSchema.statics.login = async function(email, password) {
+
+   /*  if (!email || !password) {
+      throw Error('All fields must be filled')
+    }
+
+    const user = await this.findOne({ email })
+    if (!user) {
+      throw Error('Invalid email or password...')
+    }
+
+    const match = await bcrypt.compare(password, user.password)
+    if (!match) {
+      throw Error('Invalid email or password...')
+    }
+
+    return user */
+  }
 const User = mongoose.model("User",userSchema);
 export default User;

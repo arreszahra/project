@@ -6,14 +6,15 @@ import {
   MdKeyboardDoubleArrowUp
 } from "react-icons/md";
 import {LuClipboardEdit} from "react-icons/lu"
-import { FaNewspaper,FaUsers } from 'react-icons/fa';
+import { FaNewspaper} from 'react-icons/fa';
 import {FaArrowsToDot} from "react-icons/fa6"
 import moment from 'moment';
-import { summary } from '../assets/data';
 import clsx from 'clsx';
 import Chart from '../components/Chart';
 import { BGS, getInitials, PRIORITYSTYLES, TASK_TYPE } from '../utils';
 import UserInfo from '../components/UserInfo';
+import { useGetDashboardStatsQuery } from '../redux/slices/api/taskApiSlice';
+import Loading from "../components/Loader.jsx"
 
 const TaskTable = ({tasks}) => {
   const ICONS ={
@@ -31,7 +32,7 @@ const TaskTable = ({tasks}) => {
       </tr>
     </thead>
   );
-  const TableRow =({task})=> (<tr className='border-b  border-gray-300 text-gray-600 hover:bg-gray-300/10'>
+  const TableRow =({task})=> {(<tr className='border-b  border-gray-300 text-gray-600 hover:bg-gray-300/10'>
     <td className='py-2'>
       <div className=' flex items-center gap-2'>
         <div
@@ -61,7 +62,7 @@ const TaskTable = ({tasks}) => {
           <span className='text-base text-gray-600'>{moment(task?.date).fromNow()}</span>
         </td>
   </tr>
-  );
+  )};
   return(
     <>
     <div className='w-full md:w-2/3 bg-white px-2 md:px-4 pt-4 pb-4 shadow-md rounded'>
@@ -85,7 +86,7 @@ const UserTable = ({users})=>{
   const TableHeader = ()=>(
     <thead className='border-b border-gray-300 '>
       <tr className='text-black  text-left'>
-        <th className='py-2'>Full Name</th>
+        <th className='py-2'>Full Name </th>
         <th className='py-2' >Status</th>
         <th className='py-2'>Created At </th>
       </tr>
@@ -127,33 +128,43 @@ const UserTable = ({users})=>{
   )
 }
 const Dashboard = () => {
-  const totals = summary.tasks
+  const {data, isLoading}=  useGetDashboardStatsQuery()
+ /*  if (isLoading){
+    return (
+      <div className='py-10'>
+        <Loading/>
+      </div>
+    );
+  }
+  */
+  const totals = data?.tasks;
+  
   const stats = [
     {
       _id: "1",
       label: "TOTAL TASK",
-      total: summary?.totalTasks || 0,
+      total: data?.totalTasks || 0,
       icon: <FaNewspaper />,
       bg: "bg-[#1d4ed8]",
     },
     {
       _id: "2",
       label: "COMPLTED TASK",
-      total: totals["completed"] || 0,
+      total:  0,
       icon: <MdAdminPanelSettings />,
       bg: "bg-[#0f766e]",
     },
     {
       _id: "3",
       label: "TASK IN PROGRESS ",
-      total: totals["in progress"] || 0,
+      total:   0,
       icon: <LuClipboardEdit />,
       bg: "bg-[#f59e0b]",
     },
     {
       _id: "4",
       label: "TODOS",
-      total: totals["todo"],
+      total: 0,
       icon: <FaArrowsToDot />,
       bg: "bg-[#be185d]" || 0,
     },
@@ -188,16 +199,16 @@ const Card = ({label, count , bg, icon })=>{
       <div className='w-full bg-white my-16 p-4 rounded shadow-sm'>
         <h4 className='text-xl text-gray-600 font-semibold'>
           Chart by Priority</h4>
-      <Chart />
+      <Chart  data={data?.graphData}/>
       </div>
       <div className='w-full flex flex-col md:flex-row gap-4 2xl:gap-10 py-8'>
         {/* left */}
         
-          <TaskTable tasks={summary.last10Task} />
+          <TaskTable tasks={data?.last10Task} />
 
         
         {/* right */}
-        <UserTable users={summary.users}/>
+        <UserTable users={data?.users}/>
 
       </div>
     </div>

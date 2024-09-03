@@ -16,7 +16,7 @@ dbConnection()
 
  app.use(cors({
     origin: ['http://localhost:3000' , "http://localhost:3001"],
-    methods:["GET", "PUT", "DELETE", "PUT"],
+    methods:["GET", "PUT", "DELETE", "POST"],
     credentials: true, 
  }));
 

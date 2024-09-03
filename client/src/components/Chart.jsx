@@ -2,9 +2,8 @@ import React from 'react'
 import {
     Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from "recharts"; 
-import { chartData } from '../assets/data';
 
-const Chart = () => {
+const Chart = ({data}) => {
   return (
    <ResponsiveContainer 
    width={"100%"}
@@ -12,9 +11,9 @@ const Chart = () => {
     <BarChart
     width={150}
     height={40}
-    data={chartData}>
+    data={data}>
         <XAxis dataKey="name"/>
-        <YAxis dataKey="total"/> 
+        <YAxis /> 
         <Tooltip/>
         <Legend/>
         <CartesianGrid  strokeDasharray='3 3' />

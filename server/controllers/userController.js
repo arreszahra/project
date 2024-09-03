@@ -3,6 +3,8 @@
 import Notice from "../models/notification.js";
 import User from "../models/user.js";
 import { createJWT } from "../utils/index.js";
+import jwt from "jsonwebtoken";
+
 
 export const registerUser = async (req,res)=>{
     try {
@@ -31,29 +33,31 @@ export const registerUser = async (req,res)=>{
         return res.status(400).json({status: false, message: error.message})
     }
 }
-
-export const loginUser = async (req, res) => {
+const createToken = (_id) => {
+  return jwt.sign({_id}, process.env.JWT_SECRET , { expiresIn: '7d' })
+}
+/* export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
 
-    if (!user) {
+     if (!user) {
       return res
         .status(401)
         .json({ status: false, message: "Invalid email or password." });
-    }
+    } 
 
     if (!user?.isActive) {
       return res.status(401).json({
         status: false,
-        message: "User account has been deactivated, contact the administrator",
+        message: "User account has been desactivated, contact the administrator",
       });
     }
-
-    const isMatch = await user.matchPassword(password);
-
-    if (user && isMatch) {
+ 
+    // const isMatch = await user.matchPassword(password); // password token
+// && isMatch
+    if (user ) {
       createJWT(res, user._id);
 
       user.password = undefined;
@@ -68,9 +72,24 @@ export const loginUser = async (req, res) => {
     console.log(error);
     return res.status(400).json({ status: false, message: error.message });
   }
-};
+}; */
         
+export const loginUser = async (req, res) => {
+  const {email, password} = req.body
+  /* if (!email || !password) {
+    throw Error('All fields must be filled')
+  } */
+  try {
+    const user = await User.login(email, password)
 
+    // create a token
+  const token = createToken(user)
+
+    res.status(200).json({user, token})
+  } catch (error) {
+    res.status(400).json({error: error.message})
+  }
+}
 export const logoutUser = async (req,res)=>{
   try {
         res.cookie("token", "", {
@@ -95,7 +114,7 @@ export const getTeamList = async (req,res)=>{
 export const getNotificationsList = async (req,res)=>{
     try {
         const {userId}=  req.user;
-        const notice= await Notice.findOne({
+        const notice= await Notice.find({
             team: userId,
             isRead:{ $nin:userId},
         }). populate("task", "title")
@@ -119,7 +138,7 @@ export const updateUserProfile= async (req,res)=>{
         user.title = req.body.title || user.title;
         user.role = req.body.role|| user.role;
 
-        const updatedUser = await User.save()
+        const updatedUser = await user.save()
 
         user.password =  undefined;
 

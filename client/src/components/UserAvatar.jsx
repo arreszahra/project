@@ -1,10 +1,15 @@
-import { Menu,MenuItem, MenuItems,MenuButton, Transition } from "@headlessui/react";
+import {Menu , Transition} from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { FaUser, FaUserLock } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getInitials } from "../utils";
+import { toast } from "react-toastify";
+import { useLogoutMutation } from "../redux/slices/api/authApiSlice";
+import { logout } from "../redux/slices/authSlice";
+import AddUser from "./AddUser";
+import ChangePassword from "./ChangePassword";
 
 const UserAvatar = () => {
   const [open, setOpen] = useState(false);
@@ -12,9 +17,19 @@ const UserAvatar = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+        const [logoutUser]= useLogoutMutation()
+   
+        const logoutHandler = async () => {
 
-  const logoutHandler = () => {
-    console.log("logout");
+    try {
+        logoutUser().unwrap();
+       console.log("first")
+       dispatch(logout)
+       navigate("/log-in")
+       console.log("first")
+    } catch (error) {
+      toast.error("something went wrong")
+    }
   };
 
   return (
@@ -22,11 +37,11 @@ const UserAvatar = () => {
       <div>
         <Menu as='div' className='relative inline-block text-left'>
           <div>
-            <MenuButton className='w-10 h-10 2xl:w-12 2xl:h-12 items-center justify-center rounded-full bg-blue-600'>
+            <Menu.Button className='w-10 h-10 2xl:w-12 2xl:h-12 items-center justify-center rounded-full bg-blue-600'>
               <span className='text-white font-semibold'>
                 {getInitials(user?.name)}
               </span>
-            </MenuButton>
+            </Menu.Button>
           </div>
 
           <Transition
@@ -38,9 +53,9 @@ const UserAvatar = () => {
             leaveFrom='transform opacity-100 scale-100'
             leaveTo='transform opacity-0 scale-95'
           >
-            <MenuItems className='absolute right-0 mt-2 w-56 origin-top-right divide-gray-100 rounded-md bg-white shadow-2xl ring-1 ring-black/5 focus:outline-none'>
+            <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right divide-gray-100 rounded-md bg-white shadow-2xl ring-1 ring-black/5 focus:outline-none'>
               <div className='p-4'>
-                <MenuItem>
+                <Menu.Item>
                   {({ active }) => (
                     <button
                       onClick={() => setOpen(true)}
@@ -50,9 +65,9 @@ const UserAvatar = () => {
                       Profile
                     </button>
                   )}
-                </MenuItem>
+                </Menu.Item>
 
-                <MenuItem>
+                <Menu.Item>
                   {({ active  }) => (
                     <button
                       onClick={() => setOpenPassword(true)}
@@ -62,9 +77,9 @@ const UserAvatar = () => {
                       Change Password
                     </button>
                   )}
-                </MenuItem>
+                </Menu.Item>
 
-                <MenuItem>
+                <Menu.Item>
                   {({active}) => (
                     <button
                       onClick={logoutHandler}
@@ -74,12 +89,14 @@ const UserAvatar = () => {
                       Logout
                     </button>
                   )}
-                </MenuItem>
+                </Menu.Item>
               </div>
-            </MenuItems>
+            </Menu.Items>
           </Transition>
         </Menu>
       </div>
+      <AddUser open={open} setOpen={setOpen} userData={user}  />
+      <ChangePassword open={openPassword} setOpen={setOpenPassword}  />
     </>
   );
 };

@@ -19,8 +19,8 @@ router.put("/read-noti", protectRoute, markNotificationRead);
 // FOR ADMIN ONLY - ADMIN ROUTES (we have 2 requests)
 router
     .route("/:id")
-    .put(protectRoute, isAdminRoute, activateUserProfile)
-    .delete(protectRoute, isAdminRoute, deleteUserProfile);
+    .put(protectRoute,  activateUserProfile)
+    .delete(protectRoute, deleteUserProfile);
 
 
  export default router; 

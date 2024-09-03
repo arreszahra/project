@@ -523,6 +523,15 @@ export const summary = {
     ],
     users: [
       {
+        _id:"66cc66f4d7c6b4daabffe922",
+        name :"zahra",
+        title:"Administrator",
+        role:"Admin",
+        isActive: true,
+        createdAt:"2024-08-26T11:28:52.296+00:00"
+
+      },
+      {
         _id: "65c5f27fb5204a81bde86833",
         name: "New User",
         title: "Designer",
