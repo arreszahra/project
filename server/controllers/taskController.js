@@ -6,8 +6,9 @@ import { trusted } from "mongoose";
 
 export const createTask = async (req, res) => {
     try {
-      const { userId } = req.user;
-  
+      console.log("req", req.body)
+      const { userId } = req.body.user;
+
       const { title, team, stage, date, priority, assets } = req.body;
   
       let text = "New task has been assigned to you";
@@ -30,9 +31,9 @@ export const createTask = async (req, res) => {
       const task = await Task.create({
         title,
         team,
-        stage: stage.toLowerCase(),
+        stage: stage,
         date,
-        priority: priority.toLowerCase(),
+        priority: priority,
         assets,
         activities: activity,
       });

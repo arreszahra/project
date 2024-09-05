@@ -1,5 +1,5 @@
 import Login from "./pages/Login"
-import { Routes, Route, Navigate, Outlet, useLocation, replace } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import Dashboard from "./pages/Dashboard.jsx"
 import Tasks from "./pages/Tasks.jsx"
 import Users from "./pages/Users.jsx"
@@ -14,6 +14,8 @@ import { setOpenSidebar } from "./redux/slices/authSlice.js"
 import { Transition } from "@headlessui/react"
 import clsx from "clsx"
 import { IoClose } from "react-icons/io5"
+import Register from "./pages/Register.jsx"
+
 
 
 function Layout(){
@@ -94,12 +96,15 @@ const  MobileSidebar = () => {
 
 
 function App() {
+  const { user } = useSelector((state)=>state.auth)
   return (
+   
     <main className='w-full min-h-screen bg-[#f3f4f6]'>
+      
     <Routes>
-        <Route element={<Layout/>}>
-        <Route index path='/' element={<Navigate to='/dashboard'/>} />
-        <Route path='/dashboard' element={<Dashboard/>} />
+        <Route  element={<Layout/>}>
+         <Route  index path='/'element={<Navigate to='/log-in'/>} />
+        <Route path='/dashboard' element={user? (<Dashboard/>) : <Login/>} />
         <Route path='/tasks' element={<Tasks/>} />
         <Route path='/completed/:status' element={<Tasks/>} />
         <Route path='/in-progress/:status' element={<Tasks/>} />
@@ -109,12 +114,16 @@ function App() {
         <Route path='/task/:id' element={<TaskDetails/>} />
         </Route>
 
-        <Route path='/log-in' element={<Login/>} />
+        <Route path='/log-in' element={ user? (<Dashboard/>) : (<Login/>)} />
+        <Route path='/register' element={user? (<Dashboard/>) : (<Register/>)} />
+
     </Routes>
 <Toaster richColor/>
 
 
     </main>
+    
+  
   )
 }
 

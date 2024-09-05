@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import {useForm} from "react-hook-form"
+import  { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Textbox from '../components/Textbox';
 import Button from '../components/Button';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import { useLoginMutation } from '../redux/slices/api/authApiSlice';
-import {toast} from "react-toastify"
+import {toast} from "sonner"
 import { setCredentials } from '../redux/slices/authSlice';
 import Loading from '../components/Loader';
 import axios from 'axios';
 
 
 const Login=() =>{
-  const { user } = useSelector((state)=>state.auth);
+ // const { user } = useSelector((state)=>state.auth);
   const [email, setEmail]= useState("")
   const [password, setPassword]= useState("")
 
+
+  
   const navigate=useNavigate()
  const dispatch = useDispatch();
 
@@ -26,12 +26,19 @@ const [login, { isLoading }] = useLoginMutation();
    e.preventDefault()
    
      try {
+         console.log({email, password})
+     /* const result = await login({email, password}).unwrap()
+   console.log("result", result)
+    dispatch(setCredentials(result))
+      dispatch(login({email, password}))
 
-      const result = await axios.post("http://localhost:8800/api/user/login", {email, password})
-     
-     console.log("result")
       
-      dispatch(setCredentials(result))
+ */
+        const result = await axios.post("http://localhost:8800/api/user/login", {email, password})
+        console.log("result", result)
+        dispatch(setCredentials(result.data))
+
+
      navigate("/dashboard")
      } catch (error) {
       console.log(error)
@@ -41,7 +48,7 @@ const [login, { isLoading }] = useLoginMutation();
   };
  useEffect(()=>console.log(email, password),[email, password])
 
-  /* useEffect(()=>{
+ /*  useEffect(()=>{
   user && navigate("/dashboard")
   },[user]) */
   return (
@@ -80,7 +87,7 @@ const [login, { isLoading }] = useLoginMutation();
 </div>
 
 <div className='flex flex-col gap-y-5'>
- <Textbox
+ <input
  placeholder="email@example.com"
  type="email"
  name="email"
@@ -89,7 +96,7 @@ const [login, { isLoading }] = useLoginMutation();
  onChange={e =>setEmail(e.target.value)}
 
  />
- <Textbox
+ <input
  placeholder="your password"
  type="password"
  name="password"
@@ -103,9 +110,13 @@ const [login, { isLoading }] = useLoginMutation();
 type='submit'
 label='Log-in'
 className='w-full h-10 bg-blue-700
- text-white rounded-full'/>)}
+ text-white rounded-full'
 
-</div>
+ />)}
+ </div>
+<Button type='submit' label='Sign Up'  className="text-blue-700 rounded text-underline" 
+  onClick={()=>navigate("/register")}
+  >Sign Up</Button>
   </form>
   </div>
     </div>

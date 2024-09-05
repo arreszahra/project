@@ -32,7 +32,7 @@ const TaskDialog = ({ task }) => {
       }, 500)
     } catch (error) {
       console.log(error)
-      toast.error(err?.data?.message || err.error)
+      toast.error(error?.data?.message || error.message)
     }
   };
 
@@ -52,7 +52,7 @@ const TaskDialog = ({ task }) => {
       }, 500)
     } catch (error) {
       console.log(error)
-      toast.error(err?.data?.message || err.error)
+      toast.error(error?.data?.message || error.message)
     }
   };
 

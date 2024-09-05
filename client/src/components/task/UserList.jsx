@@ -1,20 +1,26 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { BsChevronExpand } from "react-icons/bs";
-import { summary} from "../../assets/data";
 import clsx from "clsx";
 import { getInitials } from "../../utils";
 import { MdCheck } from "react-icons/md";
 import { useGetTeamListQuery } from "../../redux/slices/api/userApiSlice";
+import axios from "axios";
 
 const UserList = ({ setTeam, team }) => {
   const {data, isLoading} = useGetTeamListQuery() ;      //summary.users;
   const [selectedUsers, setSelectedUsers] = useState([]);
 
-  const handleChange = (el) => {
-    setSelectedUsers(el);
-    setTeam(el?.map((u) => u._id));
-  };
+  /* const handleChange = async(e) => {
+  e.preventDefault()
+  try {
+    const  result = await axios.put("http://localhost:8800/api/user/update/:id")
+    setTeam(e?.map((u) => u._id));
+  } catch (error) {
+    console.log(error)
+  }
+   
+  }; */
  
   useEffect(() => {
     if (team?.length < 1) {
@@ -29,7 +35,7 @@ const UserList = ({ setTeam, team }) => {
       <p className='text-gray-700'>Assign Task To: </p>
       <Listbox
         value={selectedUsers}
-        onChange={(el) => handleChange(el)}
+        onChange={(e) => handleChange(e)}
         multiple
       >
         <div className='relative mt-1'>

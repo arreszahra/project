@@ -13,7 +13,8 @@ import { FaList } from "react-icons/fa";
 import UserInfo from "../UserInfo";
 import Button from "../Button";
 import ConfirmatioDialog from "../Dialogs";
-import { useTrashtaskMutation } from "../../redux/slices/api/taskApiSlice";
+import AddTask from "./AddTask";
+import axios from "axios";
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -25,29 +26,40 @@ const Table = ({ tasks }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selected, setSelected] = useState(null);
   const[openEdit, setOpenEdit]= useState(false)
-const [trashTask]= useTrashtaskMutation();
+
 
   const deleteClicks = (id) => {
     setSelected(id);
     setOpenDialog(true);
   };
- const editTaskHandler = async()=>{
-setSelected(el)
-setOpenEdit(true)
- }
-  const deleteHandler = async() => {
+ const editTaskHandler = async(e)=>{
+  e.preventDefault()
+  try {
+    const  result = await axios.put("http://localhost:8800/api/task/update/:id",
+      {id: selected,
+       actionType: "edit"
+    });
+    toast.success(result?.message)
+ } catch (error) {
+ console.log(error)
+ toast.error(error?.data?.message || error.error)
+}
+};
+  const deleteHandler = async(e) => {
+    e.preventDefault()
     try {
-      const result = await trashTask({
-        id:selected,
-        isTrash: "trash",
-      })
-      toast.success(result?.message)
-    } catch (error) {
-      console.log(error)
-      toast.error(err?.data?.message || err.error)
-    }
-  };
-  
+      const  result = await axios.put("http://localhost:8800/api/task/:id",
+        {id: selected,
+         actionType: "delete"
+      });
+     
+        toast.success(result?.message)
+      } catch (error) {
+        console.log(error)
+        toast.error(error?.data?.message || error.error)
+      }
+    };
+    
 
   const TableHeader = () => (
     <thead className='w-full border-b border-gray-300'>
@@ -129,7 +141,7 @@ setOpenEdit(true)
           className='text-blue-600 hover:text-blue-500 sm:px-0 text-sm md:text-base'
           label='Edit'
           type='button'
-          onClick={()=> editTaskHandler(task)}
+          onClick={(e)=> editTaskHandler(e)}
         />
 
         <Button
@@ -148,7 +160,7 @@ setOpenEdit(true)
           <table className='w-full '>
             <TableHeader />
             <tbody>
-              {tasks.map((task, index) => (
+              {tasks?.map((task, index) => (
                 <TableRow key={index} task={task} />
               ))}
             </tbody>
@@ -160,9 +172,9 @@ setOpenEdit(true)
       <ConfirmatioDialog
         open={openDialog}
         setOpen={setOpenDialog}
-        onClick={deleteHandler}
+        onClick={(e)=>deleteHandler(e)}
       />
-      <AddTask 
+      <AddTask   
       open= {openEdit}
       setOpen={setOpenEdit}
       task={selected}

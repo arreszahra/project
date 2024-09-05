@@ -1,8 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
 const taskSchema= new Schema ({
-   title : {type: String, required: true},
-    date:{type:Date, required: true, default: new Date() },
+   title : {type: String},
+    date:{type:Date, default: new Date() },
     priority:{
         type: String,
         default: "normal",

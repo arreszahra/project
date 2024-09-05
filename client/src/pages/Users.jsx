@@ -9,6 +9,7 @@ import AddUser from "../components/AddUser";
 import { useGetTeamListQuery } from "../redux/slices/api/userApiSlice";
 import { useDeleteUserMutation } from "../redux/slices/api/userApiSlice";
 import { useUserActionMutation } from "../redux/slices/api/userApiSlice";
+import { toast } from "sonner";
 
 const Users = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -30,30 +31,30 @@ const [userAction] = useUserActionMutation()
       })
 
       refetch()
-      Toast.success(result.data.message);
+      toast.success(result.data.message);
       setSelected(null);
       setTimeout(()=>{
         setOpenAction(false);
       }, 500 )
     } catch (error) {
       console.log(error)
-      Toast.error(err?.data?.message || err.error)
+      toast.error(error?.data?.message || error.message)
     }
   };
   const deleteHandler = async() => {
     try {
-      const result= await deleteUser(selected);
+      const result = await deleteUser(selected);
 
 
       refetch()
-      Toast.success("Deleted Successfully ");
+      toast.success("Deleted Successfully ");
       setSelected(null);
       setTimeout(()=>{
         setOpenDialog(false);
       }, 500 )
     } catch (error) {
       console.log(error)
-      Toast.error(err?.data?.message || err.error)
+      toast.error(error?.data?.message || error.message)
     }
   };
 
@@ -64,8 +65,8 @@ const [userAction] = useUserActionMutation()
     setOpenDialog(true);
   };
 
-  const editClick = (el) => {
-    setSelected(el);
+  const editClick = (e) => {
+    setSelected(e);
     setOpen(true);
   };
 

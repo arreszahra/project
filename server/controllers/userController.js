@@ -36,7 +36,10 @@ export const registerUser = async (req,res)=>{
 const createToken = (_id) => {
   return jwt.sign({_id}, process.env.JWT_SECRET , { expiresIn: '7d' })
 }
-/* export const loginUser = async (req, res) => {
+
+
+
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -55,9 +58,9 @@ const createToken = (_id) => {
       });
     }
  
-    // const isMatch = await user.matchPassword(password); // password token
-// && isMatch
-    if (user ) {
+    const isMatch = await user.matchPassword(password); // password token
+
+    if (user && isMatch ) {
       createJWT(res, user._id);
 
       user.password = undefined;
@@ -69,17 +72,17 @@ const createToken = (_id) => {
         .json({ status: false, message: "Invalid email or password" });
     }
   } catch (error) {
-    console.log(error);
+    console.log("Log-In",error);
     return res.status(400).json({ status: false, message: error.message });
   }
-}; */
+};
         
-export const loginUser = async (req, res) => {
-  const {email, password} = req.body
+/* export const loginUser = async (req, res) => {
+  const {email, password} = req.body */
   /* if (!email || !password) {
     throw Error('All fields must be filled')
   } */
-  try {
+ /*  try {
     const user = await User.login(email, password)
 
     // create a token
@@ -89,7 +92,7 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     res.status(400).json({error: error.message})
   }
-}
+} */
 export const logoutUser = async (req,res)=>{
   try {
         res.cookie("token", "", {

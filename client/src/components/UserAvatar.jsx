@@ -23,10 +23,10 @@ const UserAvatar = () => {
 
     try {
         logoutUser().unwrap();
-       console.log("first")
-       dispatch(logout)
+       
+       dispatch(logout(user))
        navigate("/log-in")
-       console.log("first")
+       
     } catch (error) {
       toast.error("something went wrong")
     }

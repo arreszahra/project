@@ -1,5 +1,4 @@
 import express from 'express';
-import { isAdminRoute, protectRoute } from '../middlewares/authMiddleware.js';
 import { activateUserProfile, changeUserPassword, deleteUserProfile, getNotificationsList, getTeamList, loginUser, logoutUser, markNotificationRead, registerUser, updateUserProfile } from '../controllers/userController.js';
 
 
@@ -9,18 +8,18 @@ import { activateUserProfile, changeUserPassword, deleteUserProfile, getNotifica
 router.post("/login", loginUser )
  router.post("/logout", logoutUser )
 
-router.get ("/get-team", protectRoute, isAdminRoute,getTeamList);
-router.get("notifications", protectRoute, getNotificationsList);
+router.get ("/get-team",getTeamList);
+router.get("notifications", getNotificationsList);
 
-router.put("/profile", protectRoute, updateUserProfile);
-router.put("/read-noti", protectRoute, markNotificationRead);
- router.put("/change-password", protectRoute, changeUserPassword);
+router.put("/profile", updateUserProfile);
+router.put("/read-noti", markNotificationRead);
+ router.put("/change-password", changeUserPassword);
 
 // FOR ADMIN ONLY - ADMIN ROUTES (we have 2 requests)
 router
     .route("/:id")
-    .put(protectRoute,  activateUserProfile)
-    .delete(protectRoute, deleteUserProfile);
+    .put( activateUserProfile)
+    .delete( deleteUserProfile);
 
 
  export default router; 

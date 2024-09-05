@@ -15,6 +15,7 @@ import { BGS, getInitials, PRIORITYSTYLES, TASK_TYPE } from '../utils';
 import UserInfo from '../components/UserInfo';
 import { useGetDashboardStatsQuery } from '../redux/slices/api/taskApiSlice';
 import Loading from "../components/Loader.jsx"
+import { user } from '../assets/data.js';
 
 const TaskTable = ({tasks}) => {
   const ICONS ={
@@ -82,6 +83,7 @@ const TaskTable = ({tasks}) => {
     </>
   )
 }
+
 const UserTable = ({users})=>{
   const TableHeader = ()=>(
     <thead className='border-b border-gray-300 '>
@@ -150,21 +152,21 @@ const Dashboard = () => {
     {
       _id: "2",
       label: "COMPLTED TASK",
-      total:  0,
+      total:  2 ||0,
       icon: <MdAdminPanelSettings />,
       bg: "bg-[#0f766e]",
     },
     {
       _id: "3",
       label: "TASK IN PROGRESS ",
-      total:   0,
+      total:   4 || 0,
       icon: <LuClipboardEdit />,
       bg: "bg-[#f59e0b]",
     },
     {
       _id: "4",
       label: "TODOS",
-      total: 0,
+      total: 3 || 0,
       icon: <FaArrowsToDot />,
       bg: "bg-[#be185d]" || 0,
     },
@@ -176,7 +178,7 @@ const Card = ({label, count , bg, icon })=>{
      <div className='h-full flex flex-1 flex-col justify-between'>
       <p className='text-base text-gray-600'>{label}</p>
      <span className='text-2xl font-semibold'>{count}</span>
-     <span className='text-sm text-gray-400'>{"11% last month"}</span>
+     <span className='text-sm text-gray-400'>{"80% last month"}</span>
      </div>
 
      <div className={clsx(

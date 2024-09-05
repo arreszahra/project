@@ -12,6 +12,8 @@ import { app } from "../../utils/firebase";
 import { useCreateTaskMutation, useUpdateTaskMutation } from "../../redux/slices/api/taskApiSlice";
 import { toast } from "sonner";
 import { dateFormatter } from "../../utils";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 
 const LISTS = ["TODO", "IN PROGRESS", "COMPLETED"];
@@ -34,6 +36,8 @@ const AddTask = ({ open, setOpen, task }) => { // if you want to update pass taa
     formState: { errors },
   } = useForm({defaultValues});
 
+  const user= useSelector((state)=>state.auth.user)
+
   const [team, setTeam] = useState(task?.team || []);
   const [stage, setStage] = useState(task?.stage?.toUpperCase() || LISTS[0]);
   const [priority, setPriority] = useState(
@@ -41,7 +45,8 @@ const AddTask = ({ open, setOpen, task }) => { // if you want to update pass taa
   );
   const [assets, setAssets] = useState([]);
   const [uploading, setUploading] = useState(false);
-
+const  [date, setDate]= useState()
+const [title, setTitle]= useState("")
   const [createTask, {isLoadin }] = useCreateTaskMutation();
   const [updateTask, {isLoading: isUpdating}] = useUpdateTaskMutation();
   const URLS = task?.assets ? [...task.assets] : [];
@@ -60,23 +65,35 @@ const AddTask = ({ open, setOpen, task }) => { // if you want to update pass taa
     }
     //save data
     try {
-      const newData = {
+   
+      const res = task?._id ;
+     
+      console.log("res", res)
+      res ? await axios.put(` http://localhost:8800/api/task/update/${res}`,{...{
         ...data, //spread the data
         assets: [...URLS, ...uploadedFileURLs],
         team,
+        title,
+        date,
         stage,
         priority,
-      };
-      const res = task?._id 
-      ? await updateTask({...newData, _id: task._id}).unwrap()
-      : await createTask(newData).unwrap();
+      }, _id: task?._id})
+      : await axios.post("http://localhost:8800/api/task/create", {...{
+        ...data, //spread the data
+        assets: [...URLS, ...uploadedFileURLs],
+        team,
+        title,
+        date,
+        stage,
+        priority,
+      }, user})
       toast.success(res.message); 
       setTimeout(()=>{
         setOpen (false);
       }, 500)
     } catch (error) {
-     console.log(err);
-     toast.error(err?.data?.message || err.error) 
+     console.log(error);
+     toast.error(error?.data?.message || error.message) 
     }
   };
 
@@ -125,14 +142,14 @@ const AddTask = ({ open, setOpen, task }) => { // if you want to update pass taa
           </Dialog.Title>
 
           <div className='mt-2 flex flex-col gap-6'>
-            <Textbox
+            <input
               placeholder='Task Title'
               type='text'
               name='title'
               label='Task Title'
               className='w-full rounded'
-              register={register("title", { required: "Title is required" })}
-              error={errors.title ? errors.title.message : ""}
+              value={title}
+             onChange={(e)=>setTitle(e.target.value)}
             />
 
             <UserList setTeam={setTeam} team={team} />
@@ -146,16 +163,15 @@ const AddTask = ({ open, setOpen, task }) => { // if you want to update pass taa
               />
 
               <div className='w-full'>
-                <Textbox
+                <input
                   placeholder='Date'
                   type='date'
                   name='date'
                   label='Task Date'
                   className='w-full rounded'
-                  register={register("date", {
-                    required: "Date is required!",
-                  })}
-                  error={errors.date ? errors.date.message : ""}
+                  value={date}
+                 onChange={(e)=> setDate(e.target.value)}
+             
                 />
               </div>
             </div>

@@ -1,9 +1,7 @@
-import React from 'react';
 import {
     MdDashboard, MdTaskAlt, 
     MdOutlinePendingActions,
     MdOutlineAddTask,
-    MdSettings,
 } from "react-icons/md";
 import {FaTasks,FaUsers,FaTrashAlt} from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
@@ -86,12 +84,12 @@ const Sidebar = () => {
                 ))
             }
         </div>
-        <div className=''>
+        {/* <div className=''>
             <button className='w-full flex gap-2 p-2 items-center text-lg text-gray-800'>
                 <MdSettings/>
                 <span>Settings</span>
             </button>
-        </div>
+        </div> */}
         </div>)
   
 }
